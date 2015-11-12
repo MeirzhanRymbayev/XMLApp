@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<touristsVouchers  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:noNamespaceSchemaLocation='TouristVaucher.xsd'>
+    <voucher>
+        <id>5</id>
+        <typeOfVoucher>OtdihRest</typeOfVoucher>
+        <country>UAE</country>
+        <daysAndNightsCount>35</daysAndNightsCount>
+        <transport>Plane</transport>
+        <hotelHaracteristics>Radisson Blue</hotelHaracteristics>
+        <cost>1000</cost>
+    </voucher>
+
+</touristsVouchers>
