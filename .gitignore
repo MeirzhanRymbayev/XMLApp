@@ -1,0 +1,12 @@
+#Intellij IDEA files
+.idea/
+.settings/
+.iml
+.classpath
+target
+
+#Java Files
+*.jar
+*.class
+*.war
+*.ear
