@@ -11,14 +11,19 @@ package com.epam.mrymbayev;
 Корневой элемент назвать Тourist voucher.
 */
 
+import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 /**
  * Hello world!
  *
  */
 public class Main
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+    public static void main( String[] args ) throws Exception {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser parser = factory.newSAXParser();
+        parser.parse("TouristVaucher.xml", new DefaultHandler());
     }
 }

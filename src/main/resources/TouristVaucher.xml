@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<touristsVouchers  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:noNamespaceSchemaLocation='TouristVaucher.xsd'>
+<?xml version="1.0" encoding="utf-8"?>
+<touristVoucher xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns="http://www.example.com/tourist"
+                xsi:schemaLocation='http://www.example.com/tourist TouristVaucher.xsd'>
     <voucher>
-        <id>5</id>
-        <typeOfVoucher>OtdihRest</typeOfVoucher>
+        <id>v-1</id>
+        <typeOfTour>rest</typeOfTour>
         <country>UAE</country>
-        <daysAndNightsCount>35</daysAndNightsCount>
-        <transport>Plane</transport>
+        <dayAndNightQuantity>7/8</dayAndNightQuantity>
+        <transport>plane</transport>
         <hotelHaracteristics>Radisson Blue</hotelHaracteristics>
-        <cost>1000</cost>
+        <cost>
+            <price>1000</price>
+            <currency>USD</currency>
+        </cost>
     </voucher>
 
-</touristsVouchers>
+</touristVoucher>

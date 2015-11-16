@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.example.com/hotel"
+        elementFormDefault="qualified">
+
+    <element name="hotelStarsCount">
+        <simpleType>
+            <restriction base="positiveInteger">
+                <minInclusive value="2"/>
+                <maxInclusive value="5"/>
+            </restriction>
+        </simpleType>
+    </element>
+
+    <element name="food">
+        <simpleType>
+            <restriction base="string">
+                <enumeration value="HB"/>
+                <enumeration value="BB"/>
+                <enumeration value="A1"/>
+            </restriction>
+        </simpleType>
+    </element>
+
+    <element name="room">
+        <simpleType>
+            <restriction base="positiveInteger">
+                <maxInclusive value="1"/>
+                <maxInclusive value="6"/>
+            </restriction>
+        </simpleType>
+    </element>
+
+    <element name="TV" type="boolean"/>
+    <element name="AirConditioner" type="boolean"/>
+
+</schema>
