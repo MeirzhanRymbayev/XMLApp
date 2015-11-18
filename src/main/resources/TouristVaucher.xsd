@@ -4,7 +4,7 @@
            xmlns="http://www.example.com/tourist"
            elementFormDefault="qualified"
            xmlns:hc="http://www.example.com/hotel">
-    <xs:element name="touristVoucher" type="touristVoucherType"/>
+    <xs:element name="touristVouchers" type="touristVouchersType"/>
 
 
     <xs:element name="id">
@@ -45,13 +45,13 @@
     </xs:element>
 
 
-    <xs:complexType name="hotel">
+    <xs:complexType name="hotelType">
         <xs:sequence>
-            <xs:element ref="hc:hotelStarsCount"/>
-            <xs:element ref="hc:food"/>
-            <xs:element ref="hc:room"/>
-            <xs:element ref="hc:TV"/>
-            <xs:element ref="hc:AirConditioner"/>
+            <xs:element name="hotelStars" type="hc:hotelStars" />
+            <xs:element name="food" type="hc:food"/>
+            <xs:element name="room" type="hc:room"/>
+            <xs:element name="TV" type="hc:TV"/>
+            <xs:element name="AirConditioner" type="hc:AirConditioner"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -81,14 +81,14 @@
             <xs:element type="xs:string" name="country"/>
             <xs:element ref="dayAndNightQuantity"/>
             <xs:element ref="transport"/>
-            <xs:element type="xs:string" name="hotelHaracteristics"/>
+            <xs:element type="hotelType" name="hotel"/>
             <xs:element ref="cost"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="touristVoucherType">
+    <xs:complexType name="touristVouchersType">
         <xs:sequence>
-            <xs:element type="voucherType" name="voucher"/>
+            <xs:element type="voucherType" name="voucher" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

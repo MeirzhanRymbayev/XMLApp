@@ -3,35 +3,42 @@
         targetNamespace="http://www.example.com/hotel"
         elementFormDefault="qualified">
 
-    <element name="hotelStarsCount">
-        <simpleType>
-            <restriction base="positiveInteger">
-                <minInclusive value="2"/>
-                <maxInclusive value="5"/>
-            </restriction>
-        </simpleType>
-    </element>
+    <simpleType name="hotelStars">
+        <restriction base="string">
+            <enumeration value="2"/>
+            <enumeration value="3"/>
+            <enumeration value="4"/>
+            <enumeration value="5"/>
+        </restriction>
+    </simpleType>
 
-    <element name="food">
-        <simpleType>
-            <restriction base="string">
-                <enumeration value="HB"/>
-                <enumeration value="BB"/>
-                <enumeration value="A1"/>
-            </restriction>
-        </simpleType>
-    </element>
+    <simpleType name="food">
+        <restriction base="string">
+            <enumeration value="HB"/>
+            <enumeration value="BB"/>
+            <enumeration value="A1"/>
+        </restriction>
+    </simpleType>
 
-    <element name="room">
-        <simpleType>
-            <restriction base="positiveInteger">
-                <maxInclusive value="1"/>
-                <maxInclusive value="6"/>
-            </restriction>
-        </simpleType>
-    </element>
+    <simpleType name="room">
+        <restriction base="positiveInteger">
+            <maxInclusive value="1"/>
+            <maxInclusive value="6"/>
+        </restriction>
+    </simpleType>
 
-    <element name="TV" type="boolean"/>
-    <element name="AirConditioner" type="boolean"/>
+    <simpleType name="TV">
+        <restriction base="boolean">
+            <enumeration value="true"/>
+            <enumeration value="false"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="AirConditioner">
+        <restriction base="boolean">
+            <enumeration value="true"/>
+            <enumeration value="false"/>
+        </restriction>
+    </simpleType>
 
 </schema>
