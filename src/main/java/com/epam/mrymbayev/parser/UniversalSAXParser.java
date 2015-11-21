@@ -54,7 +54,7 @@ public class UniversalSAXParser implements Parser {
         Deque<Object> objectsStack;
         Object currentObject;
         String className;
-        private StringBuilder characters;
+        private StringBuilder characters = new StringBuilder();
 
         @Override
         public void startDocument() throws SAXException {
@@ -68,7 +68,7 @@ public class UniversalSAXParser implements Parser {
             if (className.equals(qName)) {
                 try {
                     rootObject = rootClass.newInstance();
-                    objectsStack.addLast(rootObject);
+                    objectsStack.add(rootObject);
                     try {
                         ParameterizedType genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
                         Type rawType = genericType.getRawType(); //interface java.util.List
@@ -80,7 +80,7 @@ public class UniversalSAXParser implements Parser {
                             Class<? extends Type> classOfTypeIL = typeIL.getClass(); // Class object of typeIL
                             System.out.println("classOfTypeIL = " + classOfTypeIL);
                         Object objectIL = classOfTypeIL.newInstance();
-                        objectsStack.addLast(objectIL);
+                        objectsStack.add(objectIL);
                     } catch (NoSuchFieldException e) {
                         //no op
                     }
@@ -122,10 +122,13 @@ public class UniversalSAXParser implements Parser {
                     }
                 } else { // Иначе если элемент сложный то заносим его в деку и вызываем setObjectFields()
                     Object complexType = clazzField.getType().newInstance(); //Создаем объект из филда
-                    objectsStack.addLast(complexType); // кидаем его в деку
+                    objectsStack.addLast(complexType); //кидаем его в деку
                     setObjectFields(qName); // и вызываем setObjectFields(localName)
                 }
             }
+            Object newObject = new Object();
+
+            newObject = currentObject;
             listObject.add(currentObject); //TODO: Проверить здесь ли нужно отправлять объект в лист
         }
 
@@ -140,7 +143,9 @@ public class UniversalSAXParser implements Parser {
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            characters = new StringBuilder(String.valueOf(ch));
+            for(int i =start; i < length; i++){
+                characters = characters.append(ch[i]);
+            }
         }
 
         @Override
