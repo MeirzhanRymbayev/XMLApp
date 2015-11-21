@@ -4,11 +4,11 @@ import com.epam.mrymbayev.annotation.IsSimleType;
 
 public class Cost {
     @IsSimleType(value = true)
-    private int cost;
+    private int price;
     private Currency currency;
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setPrice(int cost) {
+        this.price = cost;
     }
 
     public void setCurrency(Currency currency) {

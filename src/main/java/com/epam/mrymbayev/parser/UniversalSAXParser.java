@@ -66,7 +66,7 @@ public class UniversalSAXParser implements Parser {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            if (className.equals(localName)) {
+            if (className.equals(qName)) {
                 try {
                     o = tClass.newInstance();
                     objectsStack.addLast(o);
@@ -75,7 +75,7 @@ public class UniversalSAXParser implements Parser {
                 }
             } else {
                 try {
-                    setObjectFields(localName);// String localname
+                    setObjectFields(qName);// String localname
                 } catch (IllegalAccessException | InstantiationException |
                         NoSuchMethodException | SetterException ignored) {
                     //never happened
@@ -83,7 +83,7 @@ public class UniversalSAXParser implements Parser {
             }
         }
 
-        private void setObjectFields(String localName) throws IllegalAccessException, InstantiationException,
+        private void setObjectFields(String qName) throws IllegalAccessException, InstantiationException,
                                                                  NoSuchMethodException, SetterException {
             currentObject = objectsStack.getLast(); //Берем последний элемент в очереди
             Class<?> anyClass = currentObject.getClass(); //достаем его объект класс
@@ -92,7 +92,7 @@ public class UniversalSAXParser implements Parser {
                 if (sympleTypesSet.contains(clazzField.getType())) { //является ли поле простым? если да
 
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
-                    if (fieldName.equals(localName)) {
+                    if (fieldName.equals(qName)) {
                         Method setMethod = anyClass.getMethod("set" + getCapitalizedFieldName(fieldName));
                         try {
                             setMethod.invoke(currentObject, Converter.convert(
@@ -105,7 +105,7 @@ public class UniversalSAXParser implements Parser {
                 } else { // Иначе если элемент сложный то заносим его в деку и вызываем setObjectFields()
                     Object complexType = clazzField.getType().newInstance(); //Создаем объект из филда
                     objectsStack.addLast(complexType); // кидаем его в деку
-                    setObjectFields(localName); // и вызываем setObjectFields(localName)
+                    setObjectFields(qName); // и вызываем setObjectFields(localName)
                 }
             }
             listObject.add(currentObject); //TODO: Проверить здесь ли нужно отправлять объект в лист
@@ -114,7 +114,7 @@ public class UniversalSAXParser implements Parser {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
 
-            if (className.equals(localName)) {
+            if (className.equals(qName)) {
                 objectsStack.removeLast(); //удаляем заполненный элемент
             }
             characters.setLength(0);     // Чистим characters()

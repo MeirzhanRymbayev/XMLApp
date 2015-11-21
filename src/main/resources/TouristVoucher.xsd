@@ -47,11 +47,11 @@
 
     <xs:complexType name="hotelType">
         <xs:sequence>
-            <xs:element name="hotelStars" type="hc:hotelStars" />
+            <xs:element name="stars" type="hc:hotelStars" />
             <xs:element name="food" type="hc:food"/>
             <xs:element name="room" type="hc:room"/>
-            <xs:element name="TV" type="hc:TV"/>
-            <xs:element name="AirConditioner" type="hc:AirConditioner"/>
+            <xs:element name="tv" type="hc:TV"/>
+            <xs:element name="airConditioning" type="hc:AirConditioner"/>
         </xs:sequence>
     </xs:complexType>
 

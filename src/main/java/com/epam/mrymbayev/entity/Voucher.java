@@ -6,11 +6,11 @@ public class Voucher {
     @IsSimleType(value = true)
     private String id;
     @IsSimleType(value = true)
-    private String typeTour;
+    private String typeOfTour;
     @IsSimleType(value = true)
     private String country;
     @IsSimleType(value = true)
-    private String daysAndNights;
+    private String daysAndNightQuantity;
     @IsSimleType(value = true)
     private String transport;
     private Hotel hotelCharacteristics;
@@ -23,16 +23,16 @@ public class Voucher {
         this.id = id;
     }
 
-    public void setTypeTour(String typeTour) {
-        this.typeTour = typeTour;
+    public void setTypeOfTour(String typeOfTour) {
+        this.typeOfTour = typeOfTour;
     }
 
     public void setCountry(String country) {
         this.country = country;
     }
 
-    public void setDaysAndNights(String daysAndNights) {
-        this.daysAndNights = daysAndNights;
+    public void setDaysAndNightQuantity(String daysAndNightQuantity) {
+        this.daysAndNightQuantity = daysAndNightQuantity;
     }
 
     public void setTransport(String transport) {

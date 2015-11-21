@@ -9,11 +9,11 @@
         <dayAndNightQuantity>7/8</dayAndNightQuantity>
         <transport>plane</transport>
         <hotel>
-            <hotelStars>5</hotelStars>
+            <stars>5</stars>
             <food></food>
             <room>2</room>
-            <TV>true</TV>
-            <AirConditioner>true</AirConditioner>
+            <tv>true</tv>
+            <airConditioning>true</airConditioning>
         </hotel>
         <cost>
             <price>1000</price>
@@ -27,11 +27,11 @@
         <dayAndNightQuantity>10/9</dayAndNightQuantity>
         <transport>railway</transport>
         <hotel>
-            <hotelStars>4</hotelStars>
+            <stars>4</stars>
             <food>A1</food>
             <room>1</room>
-            <TV>true</TV>
-            <AirConditioner>true</AirConditioner>
+            <tv>true</tv>
+            <airConditioning>true</airConditioning>
         </hotel>
         <cost>
             <price>850</price>
