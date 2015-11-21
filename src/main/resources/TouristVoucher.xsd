@@ -4,7 +4,7 @@
            xmlns="http://www.example.com/tourist"
            elementFormDefault="qualified"
            xmlns:hc="http://www.example.com/hotel">
-    <xs:element name="touristVouchers" type="touristVouchersType"/>
+    <xs:element name="TouristVoucher" type="touristVouchersType"/>
 
 
     <xs:element name="id">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<touristVouchers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<TouristVoucher xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns="http://www.example.com/tourist"
-                xsi:schemaLocation='http://www.example.com/tourist TouristVaucher.xsd'>
+                xsi:schemaLocation='http://www.example.com/tourist TouristVoucher.xsd'>
     <voucher>
         <id>v-1</id>
         <typeOfTour>pilgrimage</typeOfTour>
@@ -39,4 +39,4 @@
         </cost>
     </voucher>
 
-</touristVouchers>
+</TouristVoucher>

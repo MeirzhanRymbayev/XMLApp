@@ -12,9 +12,15 @@ package com.epam.mrymbayev;
 Корневой элемент назвать Тourist voucher.
 */
 
+import com.epam.mrymbayev.entity.*;
+import com.epam.mrymbayev.parser.UniversalSAXParser;
 import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Hello world!
@@ -23,10 +29,9 @@ import javax.xml.parsers.SAXParserFactory;
 public class Main
 {
     public static void main( String[] args ) throws Exception {
-
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser parser = factory.newSAXParser();
-        parser.parse("TouristVaucher.xml", new DefaultHandler());
-
+        InputStream is = Main.class.getClassLoader().getResourceAsStream("TouristVoucher.xml");
+        UniversalSAXParser parser = new UniversalSAXParser();
+        List<TouristVoucher> touristVouchers = parser.parseList(is, TouristVoucher.class);
+        System.out.println(touristVouchers.toString());
     }
 }
