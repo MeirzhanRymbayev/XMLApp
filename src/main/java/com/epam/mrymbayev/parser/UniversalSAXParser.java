@@ -11,13 +11,11 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 
 public class UniversalSAXParser implements Parser {
-    private Class tClass;
+    private Class rootClass;
     List<Object> listObject;
 
     final Set<Class> sympleTypesSet = new HashSet<Class>(Arrays.asList(
@@ -30,7 +28,7 @@ public class UniversalSAXParser implements Parser {
 
     public <T> List<T> parseList(InputStream in, Class<T> clazz) throws IOException, SAXException, ParserConfigurationException {
         listObject = new ArrayList<>();
-        tClass = clazz;
+        rootClass = clazz;
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
@@ -52,7 +50,7 @@ public class UniversalSAXParser implements Parser {
     }
 
     class MySAXHandler extends DefaultHandler {
-        Object o;
+        Object rootObject;
         Deque<Object> objectsStack;
         Object currentObject;
         String className;
@@ -61,16 +59,36 @@ public class UniversalSAXParser implements Parser {
         @Override
         public void startDocument() throws SAXException {
             objectsStack = new ArrayDeque<>();
-            className = tClass.getSimpleName();  //имя тега(тип объекта)
+            className = rootClass.getSimpleName();  //имя тега(тип объекта)
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            //System.out.println("Element " + qName + " started.");
             if (className.equals(qName)) {
                 try {
-                    o = tClass.newInstance();
-                    objectsStack.addLast(o);
-                } catch (InstantiationException | IllegalAccessException ignored) {
+                    rootObject = rootClass.newInstance();
+                    objectsStack.addLast(rootObject);
+                    try {
+                        ParameterizedType genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
+                        Type rawType = genericType.getRawType(); //interface java.util.List
+                        System.out.println("rawType.toString() = " + rawType.toString());
+                        Type[] actualTypeArguments = genericType.getActualTypeArguments();
+
+                        Type typeIL = actualTypeArguments[0]; // Type of object into list
+                            System.out.println("typeIL = " + typeIL); // Достал тип вложенный в лист!!!!!!!!
+                            Class<? extends Type> classOfTypeIL = typeIL.getClass(); // Class object of typeIL
+                            System.out.println("classOfTypeIL = " + classOfTypeIL);
+                        Object objectIL = classOfTypeIL.newInstance();
+                        objectsStack.addLast(objectIL);
+                    } catch (NoSuchFieldException e) {
+                        //no op
+                    }
+                    //TODO:хотя для корневого элемента TouristVoucher надо чтобы его лист заполнялся Voucher элементами
+
+                    setObjectFields(qName); //добавили в очередь и вызвали сетОбжектПоля
+                } catch (IllegalAccessException | InstantiationException |
+                        NoSuchMethodException | SetterException ignored) {
                     //never happened
                 }
             } else {

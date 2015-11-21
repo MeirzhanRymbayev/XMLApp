@@ -13,4 +13,9 @@ public class TouristVoucher {
     public TouristVoucher(List<Voucher> list) {
         this.list = list;
     }
+
+    public boolean add(Voucher voucher){
+        this.list.add(voucher);
+        return true;
+    }
 }
