@@ -8,7 +8,6 @@ public class TouristVoucher {
 
     public TouristVoucher(){}
 
-
     public TouristVoucher(List<Voucher> list) {
         this.list = list;
     }

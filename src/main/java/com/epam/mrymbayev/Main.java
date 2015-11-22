@@ -33,7 +33,5 @@ public class Main
         UniversalSAXParser parser = new UniversalSAXParser();
         List<TouristVoucher> touristVouchers = parser.parseList(is, TouristVoucher.class);
         System.out.println(touristVouchers.toString());
-
-
     }
 }

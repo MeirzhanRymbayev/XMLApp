@@ -16,7 +16,7 @@ import java.util.*;
 
 public class UniversalSAXParser implements Parser {
     private Class rootClass;
-    private Class innerClass; // Voucher example
+    private Class currentObjClass; // Voucher example
     List<Object> listObject;
 
     final Set<Class> sympleTypesSet = new HashSet<Class>(Arrays.asList(
@@ -29,7 +29,7 @@ public class UniversalSAXParser implements Parser {
 
     public <T> List<T> parseList(InputStream in, Class<T> clazz) throws IOException, SAXException, ParserConfigurationException {
         listObject = new ArrayList<>();
-        rootClass = clazz;
+                rootClass = clazz;
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
@@ -77,23 +77,14 @@ public class UniversalSAXParser implements Parser {
                     rootObject = rootClass.newInstance();
                     objectsStack.add(rootObject);
 
-                    ParameterizedType genericType = null;
-                    try {
-                        genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    }
+                    ParameterizedType genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
 
                     Type[] actualTypeArguments = genericType.getActualTypeArguments();
-                        Type typeIL = actualTypeArguments[0]; // Type of object into list
+                    Type typeIL = actualTypeArguments[0]; // Type of object into list
                     Class typeILClass = (Class) typeIL;  // Here was most important decision for me
                     objectsStack.add(typeILClass.newInstance());
-                    setObjectFields(qName); //добавили в очередь и вызвали сетОбжектПоля
-                } catch (IllegalAccessException | InstantiationException ignored) {
-                    ignored.printStackTrace();
-                } catch (NoSuchMethodException ignored) {
-                    ignored.printStackTrace();
-                } catch (SetterException ignored) {
+                    //setObjectFields(qName); //добавили в очередь и вызвали сетОбжектПоля
+                } catch (IllegalAccessException | InstantiationException|NoSuchFieldException  ignored) {
                     ignored.printStackTrace();
                 }
             } else {
@@ -101,7 +92,7 @@ public class UniversalSAXParser implements Parser {
                     setObjectFields(qName);// String localname
                 } catch (IllegalAccessException | InstantiationException |
                         NoSuchMethodException | SetterException ignored) {
-                    //never happened
+                    ignored.printStackTrace();
                 }
             }
         }
@@ -109,15 +100,17 @@ public class UniversalSAXParser implements Parser {
         private void setObjectFields(String qName) throws IllegalAccessException, InstantiationException,
                                                                  NoSuchMethodException, SetterException {
             currentObject = objectsStack.getLast(); //Берем последний элемент в очереди
-            innerClass = currentObject.getClass(); //достаем его объект класс
+            currentObjClass = currentObject.getClass(); //достаем его объект класс
 
-            Field[] clazzFields = innerClass.getDeclaredFields(); // достаем поля этого объекта
+            Field[] clazzFields = currentObjClass.getDeclaredFields(); // достаем поля этого объекта
             for (Field clazzField : clazzFields) {
                 if (sympleTypesSet.contains(clazzField.getType())) { //является ли поле простым? если да
-
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
-                    if (fieldName.equals(qName)) {
-                        Method setMethod = innerClass.getMethod("set" + getCapitalizedFieldName(fieldName));
+                    String capitalizedFieldName = getCapitalizedFieldName(fieldName);
+                    //if (fieldName.equals(qName)) {
+                        Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName);
+
+                    fieldName = "";
                         try {
                             setMethod.invoke(currentObject, Converter.convert(
                                                                                 clazzField.getType(),
@@ -125,7 +118,7 @@ public class UniversalSAXParser implements Parser {
                         } catch (InvocationTargetException e) {
                             throw new SetterException();
                         }
-                    }
+                    //}
                 } else { // Иначе если элемент сложный то заносим его в деку и вызываем setObjectFields()
                     Object complexType = clazzField.getType().newInstance(); //Создаем объект из филда
                     objectsStack.addLast(complexType); //кидаем его в деку
