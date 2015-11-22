@@ -108,7 +108,7 @@ public class UniversalSAXParser implements Parser {
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
                     String capitalizedFieldName = getCapitalizedFieldName(fieldName);
                     //if (fieldName.equals(qName)) {
-                        Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName);
+                        Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName, fieldName.getClass());
 
                     fieldName = "";
                         try {
