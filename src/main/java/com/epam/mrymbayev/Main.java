@@ -35,8 +35,5 @@ public class Main
         System.out.println(touristVouchers.toString());
 
 
-        /*char[] ch = new char[]{'d','a','s','t','a','n'};
-        String sch = String.valueOf(ch);
-        System.out.println(sch);*/
     }
 }

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TouristVoucher {
-    List<Voucher> list;
+    List<Voucher> list= new ArrayList<>();
 
-    public TouristVoucher() {
-        list = new ArrayList<>();
-    }
+    public TouristVoucher(){}
+
 
     public TouristVoucher(List<Voucher> list) {
         this.list = list;

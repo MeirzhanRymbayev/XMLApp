@@ -16,6 +16,7 @@ import java.util.*;
 
 public class UniversalSAXParser implements Parser {
     private Class rootClass;
+    private Class innerClass; // Voucher example
     List<Object> listObject;
 
     final Set<Class> sympleTypesSet = new HashSet<Class>(Arrays.asList(
@@ -35,6 +36,12 @@ public class UniversalSAXParser implements Parser {
         parser.parse(in, new MySAXHandler());
 
         return (List<T>) listObject;
+    }
+
+    private <T> T parse(Class<T> clazz){
+
+        return null;
+
     }
 
     /**
@@ -69,27 +76,25 @@ public class UniversalSAXParser implements Parser {
                 try {
                     rootObject = rootClass.newInstance();
                     objectsStack.add(rootObject);
+
+                    ParameterizedType genericType = null;
                     try {
-                        ParameterizedType genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
-                        Type rawType = genericType.getRawType(); //interface java.util.List
-                        System.out.println("rawType.toString() = " + rawType.toString());
-                        Type[] actualTypeArguments = genericType.getActualTypeArguments();
-
-                        Type typeIL = actualTypeArguments[0]; // Type of object into list
-                            System.out.println("typeIL = " + typeIL); // Достал тип вложенный в лист!!!!!!!!
-                            Class<? extends Type> classOfTypeIL = typeIL.getClass(); // Class object of typeIL
-                            System.out.println("classOfTypeIL = " + classOfTypeIL);
-                        Object objectIL = classOfTypeIL.newInstance();
-                        objectsStack.add(objectIL);
+                        genericType = (ParameterizedType) rootObject.getClass().getDeclaredField("list").getGenericType();
                     } catch (NoSuchFieldException e) {
-                        //no op
+                        e.printStackTrace();
                     }
-                    //TODO:хотя для корневого элемента TouristVoucher надо чтобы его лист заполнялся Voucher элементами
 
+                    Type[] actualTypeArguments = genericType.getActualTypeArguments();
+                        Type typeIL = actualTypeArguments[0]; // Type of object into list
+                    Class typeILClass = (Class) typeIL;  // Here was most important decision for me
+                    objectsStack.add(typeILClass.newInstance());
                     setObjectFields(qName); //добавили в очередь и вызвали сетОбжектПоля
-                } catch (IllegalAccessException | InstantiationException |
-                        NoSuchMethodException | SetterException ignored) {
-                    //never happened
+                } catch (IllegalAccessException | InstantiationException ignored) {
+                    ignored.printStackTrace();
+                } catch (NoSuchMethodException ignored) {
+                    ignored.printStackTrace();
+                } catch (SetterException ignored) {
+                    ignored.printStackTrace();
                 }
             } else {
                 try {
@@ -104,14 +109,15 @@ public class UniversalSAXParser implements Parser {
         private void setObjectFields(String qName) throws IllegalAccessException, InstantiationException,
                                                                  NoSuchMethodException, SetterException {
             currentObject = objectsStack.getLast(); //Берем последний элемент в очереди
-            Class<?> anyClass = currentObject.getClass(); //достаем его объект класс
-            Field[] clazzFields = anyClass.getDeclaredFields(); // достаем поля этого объекта
+            innerClass = currentObject.getClass(); //достаем его объект класс
+
+            Field[] clazzFields = innerClass.getDeclaredFields(); // достаем поля этого объекта
             for (Field clazzField : clazzFields) {
                 if (sympleTypesSet.contains(clazzField.getType())) { //является ли поле простым? если да
 
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
                     if (fieldName.equals(qName)) {
-                        Method setMethod = anyClass.getMethod("set" + getCapitalizedFieldName(fieldName));
+                        Method setMethod = innerClass.getMethod("set" + getCapitalizedFieldName(fieldName));
                         try {
                             setMethod.invoke(currentObject, Converter.convert(
                                                                                 clazzField.getType(),
@@ -126,9 +132,7 @@ public class UniversalSAXParser implements Parser {
                     setObjectFields(qName); // и вызываем setObjectFields(localName)
                 }
             }
-            Object newObject = new Object();
 
-            newObject = currentObject;
             listObject.add(currentObject); //TODO: Проверить здесь ли нужно отправлять объект в лист
         }
 
