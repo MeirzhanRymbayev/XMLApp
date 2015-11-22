@@ -29,15 +29,11 @@ import java.util.List;
 public class Main
 {
     public static void main( String[] args ) throws Exception {
-        /*InputStream is = Main.class.getClassLoader().getResourceAsStream("TouristVoucher.xml");
+        InputStream is = Main.class.getClassLoader().getResourceAsStream("TouristVoucher.xml");
         UniversalSAXParser parser = new UniversalSAXParser();
         List<TouristVoucher> touristVouchers = parser.parseList(is, TouristVoucher.class);
-        System.out.println(touristVouchers.toString());*/
+        System.out.println(touristVouchers.toString());
 
-        if(int.class==Integer.class){
-            System.out.println("int.class.equals(Integer.class) : " + true);
-        } else{
-            System.out.println("int.class.equals(Integer.class) : " + false);
-        }
+
     }
 }

@@ -87,13 +87,6 @@ public class UniversalSAXParser implements Parser {
                 } catch (IllegalAccessException | InstantiationException|NoSuchFieldException  ignored) {
                     ignored.printStackTrace();
                 }
-            } else {
-                try {
-                    setObjectFields(qName);// String localname
-                } catch (IllegalAccessException | InstantiationException |
-                        NoSuchMethodException | SetterException ignored) {
-                    ignored.printStackTrace();
-                }
             }
         }
 
@@ -108,13 +101,13 @@ public class UniversalSAXParser implements Parser {
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
                     String capitalizedFieldName = getCapitalizedFieldName(fieldName);
                     //if (fieldName.equals(qName)) {
-                        Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName, fieldName.getClass());
+                        Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName, clazzField.getType());
 
-                    fieldName = "";
                         try {
                             setMethod.invoke(currentObject, Converter.convert(
                                                                                 clazzField.getType(),
                                                                                 String.valueOf(characters)));
+                            fieldName = "";
                         } catch (InvocationTargetException e) {
                             throw new SetterException();
                         }
@@ -131,6 +124,15 @@ public class UniversalSAXParser implements Parser {
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
+             //else {
+                try {
+                    setObjectFields(qName);// String localname
+                } catch (IllegalAccessException | InstantiationException |
+                        NoSuchMethodException | SetterException ignored) {
+                    ignored.printStackTrace();
+                }
+            //}
+
 
             if (className.equals(qName)) {
                 objectsStack.removeLast(); //удаляем заполненный элемент
