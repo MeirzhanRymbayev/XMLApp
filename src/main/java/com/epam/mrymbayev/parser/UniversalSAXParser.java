@@ -18,6 +18,7 @@ public class UniversalSAXParser implements Parser {
     private Class rootClass;
     private Class currentObjClass; // Voucher example
     List<Object> listObject;
+    private String qNameCommon;
 
     final Set<Class> sympleTypesSet = new HashSet<Class>(Arrays.asList(
             String.class,
@@ -71,7 +72,8 @@ public class UniversalSAXParser implements Parser {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            //System.out.println("Element " + qName + " started.");
+            qNameCommon = qName;
+            characters.setLength(0);     // Чистим characters()
             if (className.equals(qName)) {
                 try {
                     rootObject = rootClass.newInstance();
@@ -90,7 +92,7 @@ public class UniversalSAXParser implements Parser {
             }
         }
 
-        private void setObjectFields(String qName) throws IllegalAccessException, InstantiationException,
+        private void setObjectFields(String qNameCommon, String characters) throws IllegalAccessException, InstantiationException,
                                                                  NoSuchMethodException, SetterException {
             currentObject = objectsStack.getLast(); //Берем последний элемент в очереди
             currentObjClass = currentObject.getClass(); //достаем его объект класс
@@ -100,22 +102,17 @@ public class UniversalSAXParser implements Parser {
                 if (sympleTypesSet.contains(clazzField.getType())) { //является ли поле простым? если да
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
                     String capitalizedFieldName = getCapitalizedFieldName(fieldName);
-                    //if (fieldName.equals(qName)) {
                         Method setMethod = currentObjClass.getMethod("set" + capitalizedFieldName, clazzField.getType());
-
-                        try {
-                            setMethod.invoke(currentObject, Converter.convert(
-                                                                                clazzField.getType(),
-                                                                                String.valueOf(characters)));
-                            fieldName = "";
-                        } catch (InvocationTargetException e) {
-                            throw new SetterException();
-                        }
-                    //}
+                    System.out.println("clazzField.getType() = " + clazzField.getType());
+                    try {
+                        setMethod.invoke(currentObject, Converter.convert(clazzField.getType(), characters));
+                        fieldName = "";
+                    } catch (InvocationTargetException e) {
+                        throw new SetterException();
+                    }
                 } else { // Иначе если элемент сложный то заносим его в деку и вызываем setObjectFields()
                     Object complexType = clazzField.getType().newInstance(); //Создаем объект из филда
                     objectsStack.addLast(complexType); //кидаем его в деку
-                    setObjectFields(qName); // и вызываем setObjectFields(localName)
                 }
             }
 
@@ -123,33 +120,27 @@ public class UniversalSAXParser implements Parser {
         }
 
         @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            characters = characters.append(ch, start, length);
+        }
+
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-             //else {
                 try {
-                    setObjectFields(qName);// String localname
+                    qNameCommon = qName;
+                    setObjectFields(qNameCommon, characters.toString());
                 } catch (IllegalAccessException | InstantiationException |
                         NoSuchMethodException | SetterException ignored) {
                     ignored.printStackTrace();
                 }
-            //}
-
-
             if (className.equals(qName)) {
                 objectsStack.removeLast(); //удаляем заполненный элемент
             }
-            characters.setLength(0);     // Чистим characters()
-        }
 
-        @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            for(int i =start; i < length; i++){
-                characters = characters.append(ch[i]);
-            }
         }
 
         @Override
         public void endDocument() throws SAXException {
         }
-
     }
 }
