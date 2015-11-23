@@ -10,10 +10,10 @@ public class Voucher {
     @IsSimleType(value = true)
     private String country;
     @IsSimleType(value = true)
-    private String daysAndNightQuantity;
+    private String dayAndNightQuantity;
     @IsSimleType(value = true)
     private String transport;
-    private Hotel hotelCharacteristics;
+    private Hotel hotel;
     private Cost cost;
 
     public Voucher() {
@@ -31,8 +31,8 @@ public class Voucher {
         this.country = country;
     }
 
-    public void setDaysAndNightQuantity(String daysAndNightQuantity) {
-        this.daysAndNightQuantity = daysAndNightQuantity;
+    public void setDayAndNightQuantity(String dayAndNightQuantity) {
+        this.dayAndNightQuantity = dayAndNightQuantity;
     }
 
     public void setTransport(String transport) {
