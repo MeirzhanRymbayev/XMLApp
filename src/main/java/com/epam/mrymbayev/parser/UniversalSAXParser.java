@@ -98,6 +98,7 @@ public class UniversalSAXParser implements Parser {
             currentObjClass = currentObject.getClass(); //достаем его объект класс
 
             Field[] clazzFields = currentObjClass.getDeclaredFields(); // достаем поля этого объекта
+
             for (Field clazzField : clazzFields) {
                     String fieldName = clazzField.getName(); // берем имя поля. Должен быть какой то конвеншн
                 if(qNameCurrent.equals(fieldName)) {
