@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TouristVoucher {
-    List<Voucher> list= new ArrayList<>();
+    List<Voucher> voucherList = new ArrayList<>();
 
     public TouristVoucher(){}
 
-    public TouristVoucher(List<Voucher> list) {
-        this.list = list;
+    public TouristVoucher(List<Voucher> voucherList) {
+        this.voucherList = voucherList;
     }
 
     public boolean add(Voucher voucher){
-        this.list.add(voucher);
+        this.voucherList.add(voucher);
         return true;
+    }
+
+
+    @Override
+    public String toString() {
+        return voucherList.toString();
     }
 }

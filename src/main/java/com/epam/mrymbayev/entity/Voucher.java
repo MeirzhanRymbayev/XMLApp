@@ -38,4 +38,25 @@ public class Voucher {
     public void setTransport(String transport) {
         this.transport = transport;
     }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+
+    public void setCost(Cost cost) {
+        this.cost = cost;
+    }
+
+    @Override
+    public String toString() {
+        return "Voucher{" +
+                "id='" + id + '\'' +
+                ", typeOfTour='" + typeOfTour + '\'' +
+                ", country='" + country + '\'' +
+                ", dayAndNightQuantity='" + dayAndNightQuantity + '\'' +
+                ", transport='" + transport + '\'' +
+                ", hotel=" + hotel +
+                ", cost=" + cost +
+                '}';
+    }
 }

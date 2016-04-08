@@ -31,9 +31,8 @@ public class Main
     public static void main( String[] args ) throws Exception {
         InputStream is = Main.class.getClassLoader().getResourceAsStream("TouristVoucher.xml");
         UniversalSAXParser parser = new UniversalSAXParser();
-        List<TouristVoucher> touristVouchers = parser.parseList(is, TouristVoucher.class);
-        System.out.println(touristVouchers.toString());
-
+        TouristVoucher touristVoucher = parser.parseList(is, TouristVoucher.class);
+        System.out.println(touristVoucher);
 
     }
 }

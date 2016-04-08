@@ -33,4 +33,15 @@ public class Hotel {
     public void setAirConditioning(boolean airConditioning) {
         this.airConditioning = airConditioning;
     }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "stars=" + stars +
+                ", food='" + food + '\'' +
+                ", room=" + room +
+                ", tv=" + tv +
+                ", airConditioning=" + airConditioning +
+                '}';
+    }
 }

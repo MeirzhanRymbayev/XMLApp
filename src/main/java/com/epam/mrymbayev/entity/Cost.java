@@ -14,6 +14,14 @@ public class Cost {
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
+
+    @Override
+    public String toString() {
+        return "Cost{" +
+                "price=" + price +
+                ", currency=" + currency +
+                '}';
+    }
 }
 
 enum Currency {
