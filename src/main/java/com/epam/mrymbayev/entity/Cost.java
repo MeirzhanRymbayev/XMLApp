@@ -5,13 +5,13 @@ import com.epam.mrymbayev.annotation.IsSimleType;
 public class Cost {
     @IsSimleType(value = true)
     private int price;
-    private Currency currency;
+    private String currency;
 
     public void setPrice(int cost) {
         this.price = cost;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
@@ -24,7 +24,5 @@ public class Cost {
     }
 }
 
-enum Currency {
-    USD, EUR, KZT
-}
+
 
