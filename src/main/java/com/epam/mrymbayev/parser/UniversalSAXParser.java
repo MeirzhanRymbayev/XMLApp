@@ -21,7 +21,6 @@ public class UniversalSAXParser implements Parser {
 
     private Class rootClass;
     private Class currentObjClass; // Voucher example
-    List<Object> listObject;
     Object t;
 
     final Set<Class> sympleTypesSet = new HashSet<Class>(Arrays.asList(
@@ -62,7 +61,6 @@ public class UniversalSAXParser implements Parser {
         Object rootObject;
         Deque<Object> objectsDeque;
         Object currentObject;
-        String currentObjectName;
         Class genericTypeOfListInRootElement;
         String rootElementName;
         private StringBuilder characters = new StringBuilder();
@@ -71,20 +69,18 @@ public class UniversalSAXParser implements Parser {
         public void startDocument() throws SAXException {
             log.trace("startDocument() method called.");
             objectsDeque = new ArrayDeque<>();
-
             rootElementName = rootClass.getSimpleName();  //имя тега(тип объекта)
             log.trace("Variable was assigned to rootElementName : " + rootElementName);
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            log.trace("startElement() method was called to element: " + qName);
+            log.trace("startElement() method to element: " + qName);
             characters.setLength(0);     // Чистим characters()
-//            log.trace("Characters was cleaned.");
-
             log.trace("Check: Does rootElementName equals qName? ");
             log.trace("[]rootElementName: " + rootElementName + ", []qName: " + qName);
             log.trace("objectsDeque : " + objectsDeque.toString() + ", size: " + objectsDeque.size());
+
             if (rootElementName.equals(qName)) {
                 log.trace("TRUE, rootElementName = " + rootElementName + ", thus create root element with List field");
                 try {
@@ -109,37 +105,21 @@ public class UniversalSAXParser implements Parser {
                     log.trace("Searching corresponding field or new object will be added to objectsDeque");
                     for (Field field : fields) {
                         log.trace("Checking1... Is there field in object? ");
-                        // if field is absent in object and
-                        if (!field.getName().equalsIgnoreCase(qName)) {
+                        if (sympleTypesSet.contains(field.getType()) && field.getName().equalsIgnoreCase(qName))
+                            return; // To continue setting data in endElement() method
+                        if (!sympleTypesSet.contains(field.getType()) && (field.getName().equalsIgnoreCase(qName))) {
                             log.trace("Checking1 result: [true] ");
                             log.trace("Checking2... Does field complex? ");
-                            // if field is complex then add object into deque
-                            if (!sympleTypesSet.contains(field.getType()) && (field.getName().equalsIgnoreCase(qName))) {
-                                log.trace("Checking2 result: " + field.getName() + " is complex. We will add it to objectsDeque");
-                                try {
-                                    Object newInstance = field.getType().newInstance();
-                                    log.trace("New object: " + field.getName() + " form complex type was created.");
-                                    objectsDeque.add(newInstance);
-                                    log.trace(field.getName() + " object was added to objectsDeque.");
-                                    return; // Return to proceed fulfilling parsing and will not get stack
-
-                                } catch (InstantiationException | IllegalAccessException e) {
-                                    e.printStackTrace();
-                                }
+                            log.trace("Checking2 result: " + field.getName() + " is complex. We will add it to objectsDeque");
+                            try {
+                                Object newInstance = field.getType().newInstance();
+                                log.trace("New object: " + field.getName() + " form complex type was created.");
+                                objectsDeque.addLast(newInstance);
+                                log.trace(field.getName() + " object was added to objectsDeque.");
+                                return; // Return to proceed fulfilling parsing and will not get stack
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                e.printStackTrace();
                             }
-                        } else if ((field.getName().equalsIgnoreCase(qName)) && (!sympleTypesSet.contains(field.getType()))) {
-                                try {
-                                    Object newInstance = field.getType().newInstance();
-                                    log.trace("New object: " + field.getName() + " form complex type was created.");
-                                    objectsDeque.add(newInstance);
-                                    log.trace(field.getName() + " object was added to objectsDeque.");
-                                    return; // Return to proceed fulfilling parsing and will not get stack
-                                } catch (InstantiationException | IllegalAccessException e) {
-                                    e.printStackTrace();
-                                }
-
-                        } else {
-                            return;
                         }
                     }
                 }
@@ -212,6 +192,9 @@ public class UniversalSAXParser implements Parser {
                     } else { // Иначе если элемент сложный то заносим его в деку и вызываем setFieldValue()
                         Object complexType = field.getType().newInstance(); //Создаем объект из филда
                         objectsDeque.addLast(complexType); //кидаем его в деку
+                        if (fieldName.equalsIgnoreCase("cost") || fieldName.equalsIgnoreCase("hotel")) {
+                            System.out.println("Tut chto to nado predpriniat' \n\n");
+                        }
                     }
                 }
             }
@@ -267,10 +250,29 @@ public class UniversalSAXParser implements Parser {
         }
 
         private void deleteFromDequeIfFieldWasFilled(String qName) {
+
             String lastInDeq = objectsDeque.peekLast().getClass().getSimpleName();
-            if (lastInDeq.equalsIgnoreCase(qName)) {
-                objectsDeque.removeLast();
+            String genericType = genericTypeOfListInRootElement.getSimpleName();
+
+            if ((lastInDeq.equalsIgnoreCase(qName)) && !(qName.equalsIgnoreCase(rootElementName) && !(qName.equalsIgnoreCase(genericType)))) {
+                Object last = objectsDeque.removeLast();
+                System.out.println("last = " + last);
+                Object lastButOne = objectsDeque.getLast();
+                System.out.println("lastButOne = " + lastButOne);
+
+
+                try {
+                    Method method = lastButOne.getClass().getMethod("set" + getCapitalizedFieldName(lastInDeq), last.getClass());
+                    method.invoke(lastButOne, last);
+                    System.out.println(method + "was called.");
+                    System.out.println("For " + lastButOne.getClass().getSimpleName() + " element "
+                            + method.getName() + "  method was called with " + last + " element.\n\n");
+
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 log.trace("Last element in objectsDeque was removed.");
+
             }
         }
 
