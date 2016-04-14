@@ -17,6 +17,8 @@ public final class Converter {
             return (T)(Double)Double.parseDouble(character);
         } else if(clazz.equals(Character.class)||clazz.equals(char.class)){
             return (T)(Character) character.charAt(0);
+        } else if (clazz.equals(Long.class) || clazz.equals(long.class)){
+            return (T) (Long) Long.parseLong(character);
         } else return null;
 
     }
